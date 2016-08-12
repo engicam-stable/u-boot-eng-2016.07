@@ -1,0 +1,7 @@
+GEAM6UL BOARD
+M:	Matteo Lisi <support@engicam.com>
+S:	Maintained
+F:	board/engicam/geam6ul/
+F:	include/configs/geam6ul.h
+F:	configs/geam6ul_defconfig
+
