@@ -1,0 +1,9 @@
+iCoreM6 BOARD
+M:	support@engicam.com 
+S:	Maintained
+F:	board/engicam/icorem6/
+F:	include/configs/icorem6.h
+F:	configs/icorem6dl_defconfig
+F:	configs/icorem6dl_sd_defconfig
+
+
