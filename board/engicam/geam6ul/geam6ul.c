@@ -189,7 +189,7 @@ int power_init_board(void)
 
 int dram_init(void)
 {
-	gd->ram_size = SZ_128M; /* smallest size for GEA M6UL */;
+	gd->ram_size = (get_ram_size((long *)PHYS_SDRAM, MAX_SDRAM_SIZE));
 
 	return 0;
 }
