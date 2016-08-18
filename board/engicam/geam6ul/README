@@ -1,32 +1,52 @@
-How to use U-Boot on Freescale MX6UL 14x14 EVK
+How to use U-Boot on Engicam GEA M6UL 
 -----------------------------------------------
 
-- Build U-Boot for MX6UL 14x14 EVK:
+1. SDCARD boot
 
-$ make mrproper
-$ make mx6ul_14x14_evk_defconfig
-$ make
+	- Jumper setting on the starterkit:
+	
+	JM3: closed
 
-This will generate the SPL image called SPL and the u-boot.img.
+	- Build U-Boot for GEA M6UL for SD card boot:
 
-- Flash the SPL image into the micro SD card:
+	$ make mrproper
+	$ make make geam6ul_mmc_defconfig
+	$ make
 
-sudo dd if=SPL of=/dev/mmcblk0 bs=1k seek=1; sync
+	- Flash the u-boot.imx image into the micro SD card:
 
-- Flash the u-boot.img image into the micro SD card:
+	dd if=u-boot.imx of=/dev/mmcblk0 bs=512 seek=2; sync
 
-sudo dd if=u-boot.img of=/dev/mmcblk0 bs=1k seek=69; sync
+2. eMMC boot  (only for SOM with eMMC option)
 
-- Jumper settings:
+	- Jumper setting on the starterkit:
+	
+	JM3: open
 
-SW601: 0 0 1 0
-Sw602: 1 0
+	- Build U-Boot for GEA M6UL for eMMC boot:
 
-where 0 means bottom position and 1 means top position (from the
-switch label numbers reference).
+	$ make mrproper
+	$ make make geam6ul_emmc_defconfig
+	$ make
 
-- Connect the USB cable between the EVK and the PC for the console.
-(The USB console connector is the one close the push buttons)
 
-- Insert the micro SD card in the board, power it up and U-Boot messages should
-come up.
+	- Flash the u-boot.imx image into the eMMC:
+
+	dd if=u-boot.imx of=/dev/mmcblk1 bs=512 seek=2; sync
+
+3. NAND boot (only for SOM with NAND option)
+
+	- Jumper setting on the starterkit:
+	
+	JM3: open
+
+	- Build U-Boot for GEA M6UL for NAND boot:
+
+	$ make mrproper
+	$ make make geam6ul_nand_defconfig
+	$ make
+
+
+
+
+
