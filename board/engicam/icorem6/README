@@ -1,0 +1,59 @@
+How to use U-Boot on Engicam i.Core M6 SOM
+-----------------------------------------------
+
+1. SDCARD boot
+
+	- Jumper setting on the starterkit:
+	
+	JM3: closed
+
+	- Build U-Boot for GEA M6UL for SD card boot:
+
+	$ make mrproper
+	$ make make icorem6_mmc_defconfig
+	$ make
+
+	- Flash the SPL and u-boot.img images into the micro SD card:
+
+	dd if=SPL of=/dev/mmcblk0 bs=1k seek=1; sync
+	dd if=u-boot.img of=/dev/mmcblk0 bs=1k seek=69; sync
+
+
+2. eMMC boot  (only for SOM with eMMC option)
+
+	- Jumper setting on the starterkit:
+	
+	JM3: open
+
+	- Build U-Boot for GEA M6UL for eMMC boot:
+
+	$ make mrproper
+	$ make make icorem6_emmc_defconfig
+	$ make
+
+
+	- Flash the SPL and u-boot.img images into the eMMC:
+
+	dd if=SPL of=/dev/mmcblk1 bs=1k seek=1; sync
+	dd if=u-boot.img of=/dev/mmcblk1 bs=1k seek=69; sync
+
+3. NAND boot (only for SOM with NAND option)
+
+	- Jumper setting on the starterkit:
+	
+	JM3: open
+
+	- Build U-Boot for GEA M6UL for NAND boot:
+
+	$ make mrproper
+	$ make make icore_nand_defconfig
+	$ make
+
+	- Flashing SPL and u-boot.img in NAND:
+
+	$ flash_erase /dev/mtd0 0 0
+	$ kobs-ng init -x SPL --search_exponent=1 -v
+	$ flash_erase /dev/mtd1  0 0
+	$ nandwrite -p /dev/mtd1 u-boot.img
+
+
