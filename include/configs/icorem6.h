@@ -19,15 +19,27 @@
 #define MAX_SDRAM_SIZE		0x80000000  /* Maximum 2GB for i.Core M6DL/D/Q */
 #endif
 
+#define CONFIG_BOARD_EARLY_INIT_F
+#define CONFIG_BOARD_LATE_INIT
+
 #define CONFIG_DISPLAY_CPUINFO
 #define CONFIG_DISPLAY_BOARDINFO
-#define CONFIG_SYS_USE_NAND
+
+
+#ifdef CONFIG_SYS_BOOT_NAND
+#define CONFIG_SYS_USE_NAND	/* NAND SUPPORT ONLY WHEN BOOT IS FRAM NAND DEVICE */
+#endif
 
 #ifdef CONFIG_SPL
 #define CONFIG_SPL_LIBCOMMON_SUPPORT
+#ifdef CONFIG_SYS_BOOT_NAND
+#define CONFIG_SPL_NAND_SUPPORT
+#else
 #define CONFIG_SPL_MMC_SUPPORT
+#endif
 #include "imx6_spl.h"
 #endif
+
 
 #define CONFIG_MACH_TYPE	3980
 #define CONFIG_MXC_UART_BASE	UART4_BASE
@@ -45,7 +57,9 @@
 
 #define CONFIG_CMDLINE_EDITING
 
-#if defined(CONFIG_MX6Q)
+#if defined(CONFIG_MX6QDL)
+#define CONFIG_DEFAULT_FDT_FILE	"icorem6q-starterkit.dtb"
+#elif defined(CONFIG_MX6Q)
 #define CONFIG_DEFAULT_FDT_FILE	"icorem6q-starterkit.dtb"
 #elif defined(CONFIG_MX6DL) || defined(CONFIG_MXSOLO)
 #define CONFIG_DEFAULT_FDT_FILE	"icorem6dl-starterkit.dtb"
@@ -96,9 +110,9 @@
  */
 #define	EXTRA_ENV_SETTINGS_ICORE 		\
 	COMMON_PARAMETER 			\
-	"bootargsy_ubi=setenv bootargs ${bootargs} ${mtdparts_yocto} ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs\0"			\
+	"bootargsy_ubi=setenv bootargs ${bootargs} ${mtdparts_yocto} ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs\0"			\
 	"bootargsy_mmc=setenv bootargs ${bootargs} ${mtdparts_yocto} root=/dev/mmcblk0p2 rootwait rw\0" 				\
-	"mtdparts_yocto=mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)\0"							\
+	"mtdparts_yocto=mtdparts=gpmi-nand:2m(spl),2m(uboot),8m(kernel),1m(dtb),-(rootfs)\0"							\
 	"bootcmd_mmc="  YOCTO_BOOTCMD_MMC_ICORE "\0"											\
 	"bootcmd_ubi="  YOCTO_BOOTCMD_UBI 	"\0" 											\
 	"video_type=mxcfb0:dev=lcd\0"		\
@@ -165,12 +179,21 @@
 #define CONFIG_PHYLIB
 #define CONFIG_PHY_SMSC
 
+/* DMA stuff, needed for GPMI/MXS NAND support */
+#ifdef CONFIG_SYS_USE_NAND
+#define CONFIG_SYS_NAND_U_BOOT_OFFS	0x200000
+#define CONFIG_APBH_DMA
+#define CONFIG_APBH_DMA_BURST
+#define CONFIG_APBH_DMA_BURST8
+
 /* NAND stuff */
 #define CONFIG_NAND_MXS
 #define CONFIG_SYS_MAX_NAND_DEVICE	1
 #define CONFIG_SYS_NAND_BASE		0x40000000
 #define CONFIG_SYS_NAND_5_ADDR_CYCLE
 #define CONFIG_SYS_NAND_ONFI_DETECTION
+#define CONFIG_SYS_NAND_U_BOOT_START	CONFIG_SYS_TEXT_BASE
+#define CONFIG_SYS_NAND_U_BOOT_OFFS	0x200000
   
 /* UBI/UBI config options */
 #define CONFIG_CMD_FLASH
@@ -183,12 +206,7 @@
 #define CONFIG_LZO
 #define CONFIG_CMD_NAND
 #define CONFIG_CMD_NAND_TRIMFFS
-
-/* DMA stuff, needed for GPMI/MXS NAND support */
-#define CONFIG_APBH_DMA
-#define CONFIG_APBH_DMA_BURST
-#define CONFIG_APBH_DMA_BURST8
-
+#endif
 
 /* FLASH and environment organization */
 #define CONFIG_SYS_NO_FLASH

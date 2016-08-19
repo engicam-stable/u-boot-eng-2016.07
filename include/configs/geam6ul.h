@@ -20,6 +20,13 @@
 #define CONFIG_DISPLAY_CPUINFO
 #define CONFIG_DISPLAY_BOARDINFO
 
+#ifdef CONFIG_SPL
+/* SPL options */
+#define CONFIG_SPL_LIBCOMMON_SUPPORT
+#define CONFIG_SPL_MMC_SUPPORT
+#include "imx6_spl.h"
+#endif
+
 /* DCDC used on EVK, no PMIC */
 #undef CONFIG_LDO_BYPASS_CHECK
 

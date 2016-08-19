@@ -4,7 +4,6 @@
  *
  * SPDX-License-Identifier:     GPL-2.0+
  */
-
 #include <common.h>
 #include <linux/types.h>
 #include <asm/arch/clock.h>
@@ -1376,12 +1375,14 @@ void mx6_ddr3_cfg(const struct mx6_ddr_sysinfo *sysinfo,
 	mmdc0->mpodtctrl = val;
 	if (sysinfo->dsize > 1)
 		MMDC1(mpodtctrl, val);
+	debug("mmdc0->mpodtctrl=0x%08x\n", mmdc0->mpodtctrl);
 
 	/* complete calibration */
 	val = (1 << 11); /* Force measurement on delay-lines */
 	mmdc0->mpmur0 = val;
 	if (sysinfo->dsize > 1)
 		MMDC1(mpmur0, val);
+	debug("mmdc0->mpmur0=0x%08x\n", mmdc0->mpmur0);
 
 	/* Step 1: configuration request */
 	mmdc0->mdscr = (u32)(1 << 15); /* config request */
@@ -1396,15 +1397,22 @@ void mx6_ddr3_cfg(const struct mx6_ddr_sysinfo *sysinfo,
 	mmdc0->mdotc = (taofpd << 27) | (taonpd << 24) | (tanpd << 20) |
 		       (taxpd << 16) | (todtlon << 12) | (todt_idle_off << 4);
 	mmdc0->mdasp = cs0_end; /* CS addressing */
+	debug("mmdc0->mdcfg0=0x%08x\n", mmdc0->mdcfg0);
+	debug("mmdc0->mdcfg1=0x%08x\n", mmdc0->mdcfg1);
+	debug("mmdc0->mdcfg2=0x%08x\n", mmdc0->mdcfg2);
+	debug("mmdc0->mdotc=0x%08x\n", mmdc0->mdotc);
+	debug("mmdc0->mdasp=0x%08x\n", mmdc0->mdasp);
 
 	/* Step 3: Configure DDR type */
 	mmdc0->mdmisc = (sysinfo->cs1_mirror << 19) | (sysinfo->walat << 16) |
 			(sysinfo->bi_on << 12) | (sysinfo->mif3_mode << 9) |
 			(sysinfo->ralat << 6);
+	debug("mmdc0->mdmisc=0x%08x\n", mmdc0->mdmisc);
 
 	/* Step 4: Configure delay while leaving reset */
 	mmdc0->mdor = (txpr << 16) | (sysinfo->sde_to_rst << 8) |
 		      (sysinfo->rst_to_cke << 0);
+	debug("mmdc0->mdor=0x%08x\n", mmdc0->mdor);
 
 	/* Step 5: Configure DDR physical parameters (density and burst len) */
 	coladdr = ddr3_cfg->coladdr;
@@ -1416,16 +1424,19 @@ void mx6_ddr3_cfg(const struct mx6_ddr_sysinfo *sysinfo,
 			(coladdr - 9) << 20 |			/* COL */
 			(1 << 19) |		/* Burst Length = 8 for DDR3 */
 			(sysinfo->dsize << 16);		/* DDR data bus size */
+	debug("mmdc0->mdctl=0x%08x\n", mmdc0->mdctl);
 
 	/* Step 6: Perform ZQ calibration */
 	val = 0xa1390001; /* one-time HW ZQ calib */
 	mmdc0->mpzqhwctrl = val;
 	if (sysinfo->dsize > 1)
 		MMDC1(mpzqhwctrl, val);
+	debug("mmdc0->mpzqhwctrl=0x%08x\n", mmdc0->mpzqhwctrl);
 
 	/* Step 7: Enable MMDC with desired chip select */
 	mmdc0->mdctl |= (1 << 31) |			     /* SDE_0 for CS0 */
 			((sysinfo->ncs == 2) ? 1 : 0) << 30; /* SDE_1 for CS1 */
+	debug("mmdc0->mdctl=0x%08x\n", mmdc0->mdctl);
 
 	/* Step 8: Write Mode Registers to Init DDR3 devices */
 	for (cs = 0; cs < sysinfo->ncs; cs++) {
@@ -1453,6 +1464,7 @@ void mx6_ddr3_cfg(const struct mx6_ddr_sysinfo *sysinfo,
 		val = (1 << 10);
 		mmdc0->mdscr = MR(val, 0, 4, cs);
 	}
+	debug("mmdc0->mdscr=0x%08x\n", mmdc0->mdscr);
 
 	/* Step 10: Power down control and self-refresh */
 	mmdc0->mdpdc = (tcke & 0x7) << 16 |
@@ -1464,19 +1476,24 @@ void mx6_ddr3_cfg(const struct mx6_ddr_sysinfo *sysinfo,
 	if (!sysinfo->pd_fast_exit)
 		mmdc0->mdpdc |= (1 << 7); /* SLOW_PD */
 	mmdc0->mapsr = 0x00001006; /* ADOPT power down enabled */
+	debug("mmdc0->mdpdc=0x%08x\n", mmdc0->mdpdc);
+	debug("mmdc0->mapsr=0x%08x\n", mmdc0->mapsr);
 
 	/* Step 11: Configure ZQ calibration: one-time and periodic 1ms */
 	val = 0xa1390003;
 	mmdc0->mpzqhwctrl = val;
 	if (sysinfo->dsize > 1)
 		MMDC1(mpzqhwctrl, val);
+	debug("mmdc0->mpzqhwctrl=0x%08x\n", mmdc0->mpzqhwctrl);
 
 	/* Step 12: Configure and activate periodic refresh */
 	mmdc0->mdref = (1 << 14) | /* REF_SEL: Periodic refresh cycle: 32kHz */
 		       (7 << 11);  /* REFR: Refresh Rate - 8 refreshes */
+	debug("mmdc0->mdref=0x%08x\n", mmdc0->mdref);
 
 	/* Step 13: Deassert config request - init complete */
 	mmdc0->mdscr = 0x00000000;
+	debug("mmdc0->mdscr=0x%08x\n", mmdc0->mdscr);
 
 	/* wait for auto-ZQ calibration to complete */
 	mdelay(1);

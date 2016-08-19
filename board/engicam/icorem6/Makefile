@@ -7,3 +7,4 @@
 #
 
 obj-y  := mx6_icore.o
+obj-$(CONFIG_SPL) += icorem6-spl.o
