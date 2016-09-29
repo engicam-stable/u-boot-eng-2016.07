@@ -56,8 +56,8 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
- 
 
+#define EDIMM_VERSION IMX_GPIO_NR(6, 31)
 
 #define I2C_EXP_RST IMX_GPIO_NR(1, 15)
 #define I2C3_STEER  IMX_GPIO_NR(5, 4)
@@ -152,9 +152,7 @@ iomux_v3_cfg_t const uart4_pads[] = {
 
 iomux_v3_cfg_t const enet_pads[] = {
 	IOMUX_PADS(PAD_ENET_CRS_DV__ENET_RX_EN | MUX_PAD_CTRL(ENET_PAD_CTRL)),
-//	IOMUX_PADS(PAD_GPIO_16__ENET_ANATOP_ETHERNET_REF_OUT | MUX_PAD_CTRL(ENET_PAD_CTRL| PAD_CTL_SRE_FAST),
 	IOMUX_PADS(PAD_GPIO_16__ENET_REF_CLK | MUX_PAD_CTRL(ENET_PAD_CTRL| PAD_CTL_SRE_FAST)),
-//	IOMUX_PADS(PAD_ENET_RX_ER__ENET_RX_ER	| MUX_PAD_CTRL(ENET_PAD_CTRL)),
 	IOMUX_PADS(PAD_ENET_TX_EN__ENET_TX_EN	| MUX_PAD_CTRL(ENET_PAD_CTRL)),
 	IOMUX_PADS(PAD_ENET_RXD1__ENET_RX_DATA1	| MUX_PAD_CTRL(ENET_PAD_CTRL)),
 	IOMUX_PADS(PAD_ENET_RXD0__ENET_RX_DATA0	| MUX_PAD_CTRL(ENET_PAD_CTRL)),
@@ -163,6 +161,10 @@ iomux_v3_cfg_t const enet_pads[] = {
 	IOMUX_PADS(PAD_ENET_MDC__ENET_MDC	| MUX_PAD_CTRL(ENET_PAD_CTRL)),
 	IOMUX_PADS(PAD_ENET_MDIO__ENET_MDIO	| MUX_PAD_CTRL(ENET_PAD_CTRL)),
 	IOMUX_PADS(PAD_GPIO_17__GPIO7_IO12 | MUX_PAD_CTRL(NO_PAD_CTRL)),
+};
+
+iomux_v3_cfg_t const edimm_ver_pads[] = {
+	IOMUX_PADS(PAD_EIM_BCLK__GPIO6_IO31 | MUX_PAD_CTRL(ENET_PAD_CTRL)),
 };
 
 static void setup_iomux_enet(void)
@@ -726,7 +728,22 @@ static int enable_enet_clock(void)
 #define ENET_PHY_RST IMX_GPIO_NR(7, 12)
 int board_eth_init(bd_t *bis)
 {
-	int ret;
+	int ret, reg;
+
+	struct iomuxc *iomux = (struct iomuxc *)IOMUXC_BASE_ADDR;
+
+	udelay(100000);
+	
+	/* set gpr1[ENET_CLK_SEL] */
+	reg = readl(&iomux->gpr[1]);
+
+	if(gpio_get_value(EDIMM_VERSION))
+		reg &= ~(IOMUXC_GPR1_ENET_CLK_SEL_MASK);	/* EDIMM standard */
+	else
+		reg |= (IOMUXC_GPR1_ENET_CLK_SEL_MASK);		/* EDIMM 1.5 */
+
+	writel(reg, &iomux->gpr[1]);
+
 
 	setup_iomux_enet();
 
@@ -735,6 +752,7 @@ int board_eth_init(bd_t *bis)
 	gpio_direction_output(ENET_PHY_RST, 0);
 	udelay(10000);
 	gpio_set_value(ENET_PHY_RST, 1);
+	udelay(1000);
 	ret = cpu_eth_init(bis);
 
 	if (ret)
@@ -752,7 +770,8 @@ u32 get_board_rev(void)
 int board_early_init_f(void)
 {
 	setup_iomux_uart();
-
+	SETUP_IOMUX_PADS(edimm_ver_pads);
+	gpio_direction_input(EDIMM_VERSION);
 	return 0;
 }
 
@@ -781,6 +800,11 @@ int board_init(void)
 #ifdef CONFIG_CMD_SATA
 	setup_sata();
 #endif
+
+	if(gpio_get_value(EDIMM_VERSION))
+		printf("EDIMM standard 1.0 version\n");
+	else
+		printf("EDIMM 1.5 version\n");
 
 	return 0;
 }
