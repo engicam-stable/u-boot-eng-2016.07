@@ -66,13 +66,13 @@
 #else
 	#define CONFIG_BOOTCMD		"bootcmd=run bootcmd_mmc\0"
 #endif
-
-#define EXTRA_OPTION_SOLO	" cma=96MB "
-#define BOOTCMD_MMC_YOCTO	"run loadfdt; fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr}"
-#define YOCTO_BOOTCMD_MMC_ICORE	 "run bootargs; run bootargsy_mmc; setenv mmcdev ${mmcdev}; " BOOTCMD_MMC_YOCTO
-#define YOCTO_BOOTCMD_UBI	 "run bootargs; run bootargsy_ubi; nand read ${loadaddr} 0x400000 0x700000;" \
+ 
+#define EXTRA_OPTION_SOLO	 " cma=96MB "
+#define BOOTCMD_MMC_YOCTO	 "run loadfdt; fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr}"
+#define YOCTO_BOOTCMD_MMC_ICORE	 "run bootargs_mmc; " BOOTCMD_MMC_YOCTO
+#define YOCTO_BOOTCMD_UBI	 "run bootargs_ubi; nand read ${loadaddr} 0x400000 0x700000;" \
 				 "nand read ${fdt_addr} 0xc00000 0x100000;bootm ${loadaddr} - ${fdt_addr}"	
-#define YOCTO_BOOTCMD_NET	 "run bootargs; run bootargsy_net; tftp uImage; tftp ${fdt_addr} uImage.dtb; bootm ${loadaddr} - ${fdt_addr}"
+#define YOCTO_BOOTCMD_NET	 "run bootargs_net; tftp uImage; tftp ${fdt_addr} uImage.dtb; bootm ${loadaddr} - ${fdt_addr}"
 
 /* Common parameter
  * For all modules SODIMM
@@ -82,12 +82,11 @@
 	"ethprime=FEC0\0" 			\
 	"lcd_panel=Amp-WD\0" 			\
 	"nfsroot=/nfs_icore\0"			\
-	CONFIG_BOOTCMD				\
+	 CONFIG_BOOTCMD				\
 	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0"											\
-	"bootargs=setenv bootargs console=" CONFIG_CONSOLE_DEV ",115200" EXTRA_OPTION_SOLO "video=${video_type},${lcd_panel}\0"		\
-	"bootargsy_net=setenv bootargs ${bootargs} ${mtdparts_yocto} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 				\
+	"bootargs_base=setenv bootargs_tmp console=" CONFIG_CONSOLE_DEV ",115200" EXTRA_OPTION_SOLO "video=${video_type},${lcd_panel}\0"			\
+	"bootargs_net=run bootargs_base; setenv bootargs ${bootargs_tmp} ${mtdparts} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 		\
 	"bootcmd_net="  YOCTO_BOOTCMD_NET "\0"															\
-	"bootcmdy_net=" YOCTO_BOOTCMD_NET "\0"															\
 	"mmcdev=0\0"																		\
 	"mmcpart=1\0"																		\
 
@@ -96,16 +95,14 @@
  */
 #define	EXTRA_ENV_SETTINGS_ICORE 		\
 	COMMON_PARAMETER 			\
-	"bootargsy_ubi=setenv bootargs ${bootargs} ${mtdparts_yocto} ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs\0"			\
-	"bootargsy_mmc=setenv bootargs ${bootargs} ${mtdparts_yocto} root=/dev/mmcblk0p2 rootwait rw\0" 				\
-	"mtdparts_yocto=mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)\0"							\
+	"bootargs_ubi=run bootargs_base; setenv bootargs ${bootargs_tmp} ${mtdparts} ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs\0"			\
+	"bootargs_mmc=run bootargs_base; setenv bootargs ${bootargs_tmp} ${mtdparts} root=/dev/mmcblk0p2 rootwait rw\0" 				\
+	"mtdparts=mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)\0"								\
 	"bootcmd_mmc="  YOCTO_BOOTCMD_MMC_ICORE "\0"											\
 	"bootcmd_ubi="  YOCTO_BOOTCMD_UBI 	"\0" 											\
-	"video_type=mxcfb0:dev=lcd\0"		\
-	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" 	\
-	"fdt_addr=0x18000000\0" 																\
-
-															\
+	"video_type=mxcfb0:dev=lcd\0"													\
+	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" 											\
+	"fdt_addr=0x18000000\0" 													\
 
 #include "icorem6_common.h"
 
