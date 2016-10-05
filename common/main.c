@@ -40,12 +40,28 @@ static void run_preboot_environment_command(void)
 #endif /* CONFIG_PREBOOT */
 }
 
+
+#define SHOW_ENGICAM_VERSION     "Version: Engicam Yocto U-Boot 3.00\n"
+
+//! This function show on u-boot consolle on start-up the version
+//  For setting the version open file mx25_3stack.
+void version_show(void)
+{
+  printf ("\n");
+  printf (SHOW_ENGICAM_VERSION);
+  #ifdef SHOW_ENGICAM_NOTE
+  printf (SHOW_ENGICAM_NOTE);
+  #endif
+  printf ("\n");
+}
+
 /* We come here after U-Boot is initialised and ready to process commands */
 void main_loop(void)
 {
 	const char *s;
 
 	bootstage_mark_name(BOOTSTAGE_ID_MAIN_LOOP, "main_loop");
+	version_show ();
 
 #ifdef CONFIG_VERSION_VARIABLE
 	setenv("ver", version_string);  /* set version variable */
