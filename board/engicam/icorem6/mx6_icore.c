@@ -673,6 +673,9 @@ static void setup_display(void)
 	     |IOMUXC_GPR2_DATA_WIDTH_CH0_18BIT
 	     |IOMUXC_GPR2_LVDS_CH1_MODE_DISABLED
 	     |IOMUXC_GPR2_LVDS_CH0_MODE_ENABLED_DI0;
+
+	reg &= ~(IOMUXC_GPR2_LVDS_CH0_MODE_MASK |
+		 IOMUXC_GPR2_LVDS_CH1_MODE_MASK);
 	writel(reg, &iomux->gpr[2]);
 
 	reg = readl(&iomux->gpr[3]);
