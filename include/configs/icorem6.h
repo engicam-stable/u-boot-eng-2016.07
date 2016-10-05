@@ -47,9 +47,9 @@
 #define SHOW_ENGICAM_NOTE        "Note:    iCoreM6 default U-Boot\n"
 
 #if defined(CONFIG_MX6Q)
-#define CONFIG_DEFAULT_FDT_FILE	"icorem6q-starterkit.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"icoremx6q-starterkit.dtb"
 #elif defined(CONFIG_MX6DL) || defined(CONFIG_MX6SOLO)
-#define CONFIG_DEFAULT_FDT_FILE	"icorem6dl-starterkit.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"icoremx6dl-starterkit.dtb"
 #endif
 
 /* NETWORK SETTINGS */
