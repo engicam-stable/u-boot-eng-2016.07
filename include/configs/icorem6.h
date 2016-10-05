@@ -13,7 +13,6 @@
 #include <asm/imx-common/gpio.h>
 
 #ifdef CONFIG_MX6SOLO
-#define CONFIG_MX6DL
 #define MAX_SDRAM_SIZE		0x40000000  /* Maximum 1GB for i.Core M6S */
 #else
 #define MAX_SDRAM_SIZE		0x80000000  /* Maximum 2GB for i.Core M6DL/D/Q */
@@ -49,7 +48,7 @@
 
 #if defined(CONFIG_MX6Q)
 #define CONFIG_DEFAULT_FDT_FILE	"icorem6q-starterkit.dtb"
-#elif defined(CONFIG_MX6DL) || defined(CONFIG_MXSOLO)
+#elif defined(CONFIG_MX6DL) || defined(CONFIG_MX6SOLO)
 #define CONFIG_DEFAULT_FDT_FILE	"icorem6dl-starterkit.dtb"
 #endif
 

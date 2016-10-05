@@ -1075,11 +1075,9 @@ int checkboard(void)
 #elif defined CONFIG_MX6D
 	printf("Board: i.Core M6D\n");
 #elif defined CONFIG_MX6DL
-	#ifdef CONFIG_MX6SOLO
-		printf("Board: i.Core M6S\n");
-	#else
-		printf("Board: i.Core M6DL\n");
-	#endif
+	printf("Board: i.Core M6DL\n");
+#else
+	printf("Board: i.Core M6S\n");
 #endif
 	return 0;
 }
