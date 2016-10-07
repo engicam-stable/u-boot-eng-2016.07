@@ -268,7 +268,7 @@
 #else
 	#define CONFIG_STR_MMC_DEV "0"
 	#define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* USDHC2 */
-	#define CONFIG_DEFAULT_FDT_FILE		"igeamx6ul-starterkit.dtb"
+	#define CONFIG_DEFAULT_FDT_FILE		"geamx6ul-starterkit.dtb"
 #endif
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
 
