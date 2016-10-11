@@ -10,7 +10,7 @@ How to use U-Boot on Engicam i.Core M6 SOM
 	- Build U-Boot for GEA M6UL for SD card boot:
 
 	$ make mrproper
-	$ make make icorem6_mmc_defconfig
+	$ make icorem6_mmc_defconfig
 	$ make
 
 	- Flash the SPL and u-boot.img images into the micro SD card:
@@ -28,7 +28,7 @@ How to use U-Boot on Engicam i.Core M6 SOM
 	- Build U-Boot for GEA M6UL for eMMC boot:
 
 	$ make mrproper
-	$ make make icorem6_emmc_defconfig
+	$ make icorem6_emmc_defconfig
 	$ make
 
 
@@ -46,7 +46,7 @@ How to use U-Boot on Engicam i.Core M6 SOM
 	- Build U-Boot for GEA M6UL for NAND boot:
 
 	$ make mrproper
-	$ make make icore_nand_defconfig
+	$ make icore_nand_defconfig
 	$ make
 
 	- Flashing SPL and u-boot.img in NAND:
