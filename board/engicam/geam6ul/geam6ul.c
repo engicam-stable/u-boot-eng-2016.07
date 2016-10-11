@@ -387,20 +387,27 @@ static iomux_v3_cfg_t const fec2_pads[] = {
 
 static void setup_iomux_fec(int fec_id)
 {
-	if (fec_id == 0)
-		imx_iomux_v3_setup_multiple_pads(fec1_pads,
-						 ARRAY_SIZE(fec1_pads));
-	else
-		imx_iomux_v3_setup_multiple_pads(fec2_pads,
-						 ARRAY_SIZE(fec2_pads));
+	imx_iomux_v3_setup_multiple_pads(fec1_pads, ARRAY_SIZE(fec1_pads));
+	imx_iomux_v3_setup_multiple_pads(fec2_pads, ARRAY_SIZE(fec2_pads));
+
+	/* Reset the PHY */
+	gpio_direction_output(IMX_GPIO_NR(2, 15) , 0);
+	udelay(50000);
+	gpio_direction_output(IMX_GPIO_NR(2, 15) , 1);
 }
 
 int board_eth_init(bd_t *bis)
 {
+	int ret;
+
 	setup_iomux_fec(CONFIG_FEC_ENET_DEV);
 
-	return fecmxc_initialize_multi(bis, CONFIG_FEC_ENET_DEV,
-				       CONFIG_FEC_MXC_PHYADDR, IMX_FEC_BASE);
+	ret = fecmxc_initialize_multi(bis, CONFIG_FEC_ENET_DEV,
+		CONFIG_FEC_MXC_PHYADDR, IMX_FEC_BASE);
+	if (ret)
+		printf("FEC%d MXC: %s:failed\n", CONFIG_FEC_ENET_DEV, __func__);
+
+	return 0;
 }
 
 static int setup_fec(int fec_id)
@@ -414,20 +421,29 @@ static int setup_fec(int fec_id)
 		 * clear gpr1[13], set gpr1[17].
 		 */
 		clrsetbits_le32(&iomuxc_regs->gpr[1], IOMUX_GPR1_FEC1_MASK,
-				IOMUX_GPR1_FEC1_CLOCK_MUX1_SEL_MASK);
+				IOMUX_GPR1_FEC1_CLOCK_MUX1_SEL_MASK);		
 	} else {
+	  
+  		/* Use 50M anatop loopback REF_CLK2 for ENET2, clear gpr1[14], set gpr1[18]*/
+	  	clrsetbits_le32(&iomuxc_regs->gpr[1], IOMUX_GPR1_FEC2_MASK,0);
+
 		/*
 		 * Use 50M anatop loopback REF_CLK2 for ENET2,
 		 * clear gpr1[14], set gpr1[18].
 		 */
-		clrsetbits_le32(&iomuxc_regs->gpr[1], IOMUX_GPR1_FEC2_MASK,
-				IOMUX_GPR1_FEC2_CLOCK_MUX1_SEL_MASK);
+		clrsetbits_le32(&iomuxc_regs->gpr[1], IOMUX_GPR1_FEC1_MASK,
+				IOMUX_GPR1_FEC1_CLOCK_MUX1_SEL_MASK);
+
+		ret = enable_fec_anatop_clock(0, ENET_50MHZ);
+
 	}
 
 	ret = enable_fec_anatop_clock(fec_id, ENET_50MHZ);
 	if (ret)
+	{
+		printf("enable_fec_anatop_clock error %d\n", ret);
 		return ret;
-
+	}
 	enable_enet_clk(1);
 
 	return 0;
@@ -435,7 +451,6 @@ static int setup_fec(int fec_id)
 
 int board_phy_config(struct phy_device *phydev)
 {
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x1f, 0x8190);
 
 	if (phydev->drv->config)
 		phydev->drv->config(phydev);
@@ -611,7 +626,7 @@ int board_late_init(void)
 #endif
 
 #ifdef CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
-	setenv("board_name", "geam6ul");
+	setenv("board_name", "geamx6ul");
 
 	setenv("board_rev", "-");
 #endif
@@ -621,7 +636,7 @@ int board_late_init(void)
 
 int checkboard(void)
 {
-	puts("Engicam GEAM6UL based\n");
+	puts("Engicam GEAMX6UL based\n");
 
 	return 0;
 }
