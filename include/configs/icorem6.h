@@ -32,7 +32,7 @@
 #define CONFIG_MXC_UART_BASE	UART4_BASE
 #define CONFIG_CONSOLE_DEV		"ttymxc3"
 #define CONFIG_MMCROOT			"/dev/mmcblk0p2"
- 
+
 /* Miscellaneous configurable options */
 #define CONFIG_SYS_LONGHELP
 #define CONFIG_SYS_HUSH_PARSER
@@ -67,12 +67,12 @@
 #else
 	#define CONFIG_BOOTCMD		"bootcmd=run bootcmd_mmc\0"
 #endif
- 
+
 #define EXTRA_OPTION_SOLO	 " cma=96MB "
 #define BOOTCMD_MMC_YOCTO	 "run loadfdt; fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr}"
 #define YOCTO_BOOTCMD_MMC_ICORE	 "run bootargs_mmc; " BOOTCMD_MMC_YOCTO
 #define YOCTO_BOOTCMD_UBI	 "run bootargs_ubi; nand read ${loadaddr} 0x400000 0x700000;" \
-				 "nand read ${fdt_addr} 0xc00000 0x100000;bootm ${loadaddr} - ${fdt_addr}"	
+				 "nand read ${fdt_addr} 0xc00000 0x100000;bootm ${loadaddr} - ${fdt_addr}"
 #define YOCTO_BOOTCMD_NET	 "run bootargs_net; tftp uImage; tftp ${fdt_addr} uImage.dtb; bootm ${loadaddr} - ${fdt_addr}"
 
 /* Common parameter
@@ -144,7 +144,7 @@
 #define CONFIG_SYS_MMC_ENV_DEV		0
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user partition */
 #endif
- 
+
 
 /* Network */
 #define CONFIG_PHY_SMSC
@@ -169,7 +169,7 @@
 #define CONFIG_SYS_NAND_BASE		0x40000000
 #define CONFIG_SYS_NAND_5_ADDR_CYCLE
 #define CONFIG_SYS_NAND_ONFI_DETECTION
-  
+
 /* UBI/UBI config options */
 #define CONFIG_CMD_FLASH
 #define CONFIG_MTD_DEVICE
