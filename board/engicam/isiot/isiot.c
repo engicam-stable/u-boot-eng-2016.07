@@ -643,7 +643,7 @@ int board_late_init(void)
 
 int checkboard(void)
 {
-	puts("Engicam GEAMX6UL ISIOT based\n");
+	puts("Engicam GEAMX6UL IsIoT based\n");
 
 	return 0;
 }
