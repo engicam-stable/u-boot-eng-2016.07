@@ -1,0 +1,12 @@
+if TARGET_ISIOT
+
+config SYS_BOARD
+	default "isiot"
+
+config SYS_VENDOR
+	default "engicam"
+
+config SYS_CONFIG_NAME
+	default "isiot"
+
+endif

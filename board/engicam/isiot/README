@@ -1,0 +1,52 @@
+How to use U-Boot on Engicam ISIOT 
+-----------------------------------------------
+
+1. SDCARD boot
+
+	- Jumper setting on the starterkit:
+	
+	JM3: closed
+
+	- Build U-Boot for ISIOT for SD card boot:
+
+	$ make mrproper
+	$ make isiot_mmc_defconfig
+	$ make
+
+	- Flash the u-boot.imx image into the micro SD card:
+
+	dd if=u-boot.imx of=/dev/mmcblk0 bs=512 seek=2; sync
+
+2. eMMC boot  (only for SOM with eMMC option)
+
+	- Jumper setting on the starterkit:
+	
+	JM3: open
+
+	- Build U-Boot for ISIOT for eMMC boot:
+
+	$ make mrproper
+	$ make isiot_emmc_defconfig
+	$ make
+
+
+	- Flash the u-boot.imx image into the eMMC:
+
+	dd if=u-boot.imx of=/dev/mmcblk1 bs=512 seek=2; sync
+
+3. NAND boot (only for SOM with NAND option)
+
+	- Jumper setting on the starterkit:
+	
+	JM3: open
+
+	- Build U-Boot for ISIOT for NAND boot:
+
+	$ make mrproper
+	$ make isiot_nand_defconfig
+	$ make
+
+
+
+
+

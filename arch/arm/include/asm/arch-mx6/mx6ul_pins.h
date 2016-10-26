@@ -110,6 +110,7 @@ enum {
 	MX6_PAD_GPIO1_IO03__I2C1_SDA                           = IOMUX_PAD(0x02F4, 0x0068, IOMUX_CONFIG_SION | 0, 0x05A8, 1, 0),
 	MX6_PAD_GPIO1_IO03__GPT1_COMPARE3                      = IOMUX_PAD(0x02F4, 0x0068, 1, 0x0000, 0, 0),
 	MX6_PAD_GPIO1_IO03__USB_OTG2_OC                        = IOMUX_PAD(0x02F4, 0x0068, 2, 0x0660, 0, 0),
+	MX6_PAD_GPIO1_IO03__OSC32K_32K_OUT                     = IOMUX_PAD(0x02F4, 0x0068, 3, 0x0660, 0, 0),
 	MX6_PAD_GPIO1_IO03__USDHC1_CD_B                        = IOMUX_PAD(0x02F4, 0x0068, 4, 0x0668, 0, 0),
 	MX6_PAD_GPIO1_IO03__GPIO1_IO03                         = IOMUX_PAD(0x02F4, 0x0068, 5, 0x0000, 0, 0),
 	MX6_PAD_GPIO1_IO03__CCM_DI0_EXT_CLK                    = IOMUX_PAD(0x02F4, 0x0068, 6, 0x0000, 0, 0),

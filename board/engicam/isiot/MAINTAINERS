@@ -1,0 +1,9 @@
+GEAM6UL ISIOT BOARD
+M:	Matteo Lisi <support@engicam.com>
+S:	Maintained
+F:	board/engicam/isiot/
+F:	include/configs/isiot.h
+F:	configs/isiot_nand_defconfig
+F:	configs/isiot_sd_defconfig
+F:	configs/isiot_emmc_defconfig
+
