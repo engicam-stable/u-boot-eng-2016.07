@@ -69,6 +69,7 @@ DECLARE_GLOBAL_DATA_PTR;
 #define IOX_SHCP IMX_GPIO_NR(5, 11)
 #define IOX_OE IMX_GPIO_NR(5, 8)
 
+#if 0 //MP: tolto
 static iomux_v3_cfg_t const iox_pads[] = {
 	/* IOX_SDI */
 	MX6_PAD_BOOT_MODE0__GPIO5_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
@@ -79,12 +80,14 @@ static iomux_v3_cfg_t const iox_pads[] = {
 	/* IOX_nOE */
 	MX6_PAD_SNVS_TAMPER8__GPIO5_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
+#endif
 
 static iomux_v3_cfg_t const cko_pads[] = {
 	/* CCM_CLKO1 */
 	MX6_PAD_JTAG_TMS__CCM_CLKO1 | MUX_PAD_CTRL(CKO_CLK_PAD_CTRL),
 };
 
+#if 0 //MP:tolto
 /*
  * HDMI_nRST --> Q0
  * ENET1_nRST --> Q1
@@ -161,6 +164,7 @@ static void iox74lv_init(void)
 	 */
 	gpio_direction_output(IOX_STCP, 1);
 };
+#endif
 
 #ifdef CONFIG_SYS_I2C_MXC
 #define PC MUX_PAD_CTRL(I2C_PAD_CTRL)
@@ -582,10 +586,10 @@ int board_init(void)
 	/* Address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 
-	imx_iomux_v3_setup_multiple_pads(iox_pads, ARRAY_SIZE(iox_pads));
+	//imx_iomux_v3_setup_multiple_pads(iox_pads, ARRAY_SIZE(iox_pads));
 	imx_iomux_v3_setup_multiple_pads(cko_pads, ARRAY_SIZE(cko_pads));
 
-	iox74lv_init();
+	//iox74lv_init();
 
 #ifdef CONFIG_SYS_I2C_MXC
 	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info1);
