@@ -10,7 +10,7 @@ How to use U-Boot on Engicam GEA M6UL
 	- Build U-Boot for GEA M6UL for SD card boot:
 
 	$ make mrproper
-	$ make geam6ul_mmc_defconfig
+	$ make geamx6ul_mmc_defconfig
 	$ make
 
 	- Flash the u-boot.imx image into the micro SD card:
@@ -26,7 +26,7 @@ How to use U-Boot on Engicam GEA M6UL
 	- Build U-Boot for GEA M6UL for eMMC boot:
 
 	$ make mrproper
-	$ make geam6ul_emmc_defconfig
+	$ make geamx6ul_emmc_defconfig
 	$ make
 
 
@@ -43,7 +43,7 @@ How to use U-Boot on Engicam GEA M6UL
 	- Build U-Boot for GEA M6UL for NAND boot:
 
 	$ make mrproper
-	$ make geam6ul_nand_defconfig
+	$ make geamx6ul_nand_defconfig
 	$ make
 
 
