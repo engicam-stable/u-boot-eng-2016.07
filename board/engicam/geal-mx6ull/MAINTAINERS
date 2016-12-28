@@ -1,0 +1,7 @@
+GEAL-MX6ULL BOARD
+M:	Matteo Lisi <support@engicam.com>
+S:	Maintained
+F:	board/engicam/geal-mx6ull/
+F:	include/configs/geal-mx6ull.h
+F:	configs/geal_mx6ull_nand_defconfig
+
