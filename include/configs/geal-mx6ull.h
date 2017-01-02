@@ -143,21 +143,11 @@
 #define CONFIG_NETMASK		255.255.255.0
 #define CONFIG_ETHADDR		9C:53:CD:01:21:6A
 
-#define BOOTCMD_FROM_EMMC \
-  "bootargs_emmc=run bootargs_base; setenv bootargs ${bootargs_tmp} root=/dev/mmcblk${mmcdev}p2 rootwait rw\0" \
-	"bootcmd_emmc=setenv mmcdev 1; run bootargs_emmc; run loadfdt; run loaduImage; bootm ${loadaddr} - ${fdt_addr}\0"
+
 #define BOOTCMD_FROM_NAND \
 	"bootargs_ubi=run bootargs_base; setenv bootargs ${bootargs_tmp} ${mtdparts} ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs\0"	\
 	"bootcmd_ubi=run bootargs_ubi;nand read ${loadaddr} 0x400000 0x700000;nand read ${fdt_addr} 0xc00000 0x100000;bootm ${loadaddr} - ${fdt_addr} \0"
 #define BOOTCMD_FROM_NET	 "run bootargs_net; tftp uImage; tftp ${fdt_addr} uImage.dtb; bootm ${loadaddr} - ${fdt_addr} \0"
-
-#ifdef CONFIG_SYS_BOOT_EMMC
-	#undef BOOTCMD_FROM_NAND
-	#define BOOTCMD_FROM_NAND ""
-#else /* For NAND & SDCARD */
-	#undef BOOTCMD_FROM_EMMC
-	#define BOOTCMD_FROM_EMMC ""
-#endif
 
 #if defined(CONFIG_SYS_BOOT_NAND)
 	#define CONFIG_BOOTCMD		"bootcmd=run bootcmd_ubi\0"
@@ -178,7 +168,6 @@
 		"bootargs_net=run bootargs_base; setenv bootargs ${bootargs_tmp} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 				\
 		"bootcmd_net="  BOOTCMD_FROM_NET	\
 		BOOTCMD_FROM_NAND	\
-		BOOTCMD_FROM_EMMC	\
 		CONFIG_BOOTCMD	\
 		"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0"											\
 		"mmcpart=1\0"					\
@@ -278,20 +267,16 @@
 #define CONFIG_ENV_SIZE			CONFIG_ENV_SECT_SIZE
 #endif
 
-#define SHOW_ENGICAM_NOTE        "Note:    Geamx6ul default U-Boot\n"
+#define SHOW_ENGICAM_NOTE        "Note:    Gealmx6ull default U-Boot\n"
 
 #ifndef CONFIG_SYS_MMC_ENV_DEV
 	#define CONFIG_SYS_MMC_ENV_DEV		0   /* USDHC1 */
 #endif
-#if CONFIG_SYS_MMC_ENV_DEV == 1	/* boot from eMMC */
-	#define CONFIG_STR_MMC_DEV "1"
-	#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
-	#define CONFIG_DEFAULT_FDT_FILE		"geamx6ul-starterkit-emmc.dtb"
-#else
-	#define CONFIG_STR_MMC_DEV "0"
-	#define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* USDHC2 */
-	#define CONFIG_DEFAULT_FDT_FILE		"geamx6ul-starterkit.dtb"
-#endif
+
+#define CONFIG_STR_MMC_DEV "0"
+#define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* USDHC2 */
+#define CONFIG_DEFAULT_FDT_FILE		"geal-mx6ull-starterkit.dtb"
+
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
 
 #define CONFIG_CMD_BMODE
