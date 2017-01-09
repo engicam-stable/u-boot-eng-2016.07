@@ -1,0 +1,16 @@
+if TARGET_ICOREM6RQS
+
+config SYS_BOARD
+	default "icorem6rqs"
+
+config SYS_VENDOR
+	default "engicam"
+
+config SYS_SOC
+	default "mx6"
+
+config SYS_CONFIG_NAME
+	default "icorem6rqs"
+
+endif
+
