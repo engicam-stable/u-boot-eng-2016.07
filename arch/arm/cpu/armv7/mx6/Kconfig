@@ -112,6 +112,12 @@ config TARGET_ICOREM6
 	select DM_THERMAL
 	select SUPPORT_SPL
 
+config TARGET_ICOREM6RQS
+	bool "icorem6rqs"
+	select DM
+	select DM_THERMAL
+	select SUPPORT_SPL
+
 config TARGET_MX6SLEVK
 	bool "mx6slevk"
 	select SUPPORT_SPL
@@ -255,6 +261,7 @@ source "board/engicam/geam6ul/Kconfig"
 source "board/engicam/geal-mx6ull/Kconfig"
 source "board/engicam/isiot/Kconfig"
 source "board/engicam/icorem6/Kconfig"
+source "board/engicam/icorem6rqs/Kconfig"
 source "board/freescale/mx6qarm2/Kconfig"
 source "board/freescale/mx6qsabreauto/Kconfig"
 source "board/freescale/mx6sabresd/Kconfig"
