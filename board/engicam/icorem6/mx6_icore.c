@@ -186,6 +186,25 @@ iomux_v3_cfg_t const usdhc1_pads[] = {
 
 };
 
+#ifdef CONFIG_SYS_USE_NAND
+iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
+};
+
+#else	/* eMMC version */
+iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
+	MX6_PAD_SD3_RST__SD3_RESET | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_CLK__SD3_CLK | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_CMD__SD3_CMD | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_DAT0__SD3_DATA0| MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_DAT1__SD3_DATA1 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_DAT2__SD3_DATA2 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_DAT3__SD3_DATA3 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_DAT4__SD3_DATA4 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_DAT5__SD3_DATA5 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_DAT6__SD3_DATA6 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_SD3_DAT7__SD3_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+};
+#endif 
 
 #ifdef CONFIG_I2C_MXC
 static int setup_pmic_voltages(void)
@@ -272,7 +291,7 @@ static void setup_iomux_uart(void)
 
 struct fsl_esdhc_cfg usdhc_cfg[2] = {
 	{USDHC1_BASE_ADDR, 0, 4},
-	{USDHC3_BASE_ADDR},
+	{USDHC3_BASE_ADDR, 0, 8},
 };
 
 int mmc_get_env_devno(void)
@@ -288,7 +307,8 @@ int mmc_get_env_devno(void)
 	 */
 	if (2 == dev_no)
 		dev_no--;
-
+	printf("mmc_get_env_devno returns %d\n", dev_no);
+	
 	return dev_no;
 }
 
@@ -302,7 +322,7 @@ int board_mmc_getcd(struct mmc *mmc)
 		ret = !gpio_get_value(USDHC1_CD_GPIO);
 		break;
 	case USDHC3_BASE_ADDR:
-		ret = !gpio_get_value(USDHC3_CD_GPIO);
+		ret = 1;
 		break;
 	}
 
@@ -326,6 +346,11 @@ int board_mmc_init(bd_t *bis)
 				usdhc1_pads, ARRAY_SIZE(usdhc1_pads));
 			gpio_direction_input(USDHC1_CD_GPIO);
 			usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC_CLK);
+			break;
+		case 1:
+			imx_iomux_v3_setup_multiple_pads(
+				usdhc2_emmc_pads, ARRAY_SIZE(usdhc2_emmc_pads));
+			usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
 			break;
 		default:
 			printf("Warning: you configured more USDHC controllers"
@@ -377,7 +402,9 @@ iomux_v3_cfg_t gpmi_pads[] = {
 static void setup_gpmi_nand(void)
 {
 	struct mxc_ccm_reg *mxc_ccm = (struct mxc_ccm_reg *)CCM_BASE_ADDR;
-
+	
+	printf("NAND FLASH iomux configured for storage memory\n");
+	
 	/* config gpmi nand iomux */
 	imx_iomux_v3_setup_multiple_pads(gpmi_pads, ARRAY_SIZE(gpmi_pads));
 
