@@ -44,9 +44,9 @@
 #define CONFIG_CMDLINE_EDITING
 
 #if defined(CONFIG_MX6Q)
-#define CONFIG_DEFAULT_FDT_FILE	"icorem6q-starterkit-rqs.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"icoremx6q-starterkit-rqs.dtb"
 #elif defined(CONFIG_MX6DL)
-#define CONFIG_DEFAULT_FDT_FILE	"icorem6dl-starterkit-rqs.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"icoremx6dl-starterkit-rqs.dtb"
 #endif
 
 /* NETWORK SETTINGS */
