@@ -45,7 +45,7 @@
 
 #if defined(CONFIG_MX6Q)
 #define CONFIG_DEFAULT_FDT_FILE	"icoremx6q-starterkit-rqs.dtb"
-#elif defined(CONFIG_MX6DL)
+#elif (defined(CONFIG_MX6SOLO) || defined(CONFIG_MX6DL))
 #define CONFIG_DEFAULT_FDT_FILE	"icoremx6dl-starterkit-rqs.dtb"
 #endif
 
