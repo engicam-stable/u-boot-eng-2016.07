@@ -1,0 +1,12 @@
+if TARGET_MICROGEA_MX6ULL
+
+config SYS_BOARD
+	default "microgea-mx6ull"
+
+config SYS_VENDOR
+	default "engicam"
+
+config SYS_CONFIG_NAME
+	default "microgea-mx6ull"
+
+endif

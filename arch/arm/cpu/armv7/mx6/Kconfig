@@ -162,6 +162,12 @@ config TARGET_GEAL_MX6ULL
 	select DM
 	select DM_THERMAL
 
+config TARGET_MICROGEA_MX6ULL
+	bool "microgea_m6xull"
+	select MX6ULL
+	select DM
+	select DM_THERMAL
+
 config TARGET_ISIOT
 	bool "isiot"
 	select MX6UL
@@ -259,6 +265,7 @@ source "board/el/el6x/Kconfig"
 source "board/embest/mx6boards/Kconfig"
 source "board/engicam/geam6ul/Kconfig"
 source "board/engicam/geal-mx6ull/Kconfig"
+source "board/engicam/microgea-mx6ull/Kconfig"
 source "board/engicam/isiot/Kconfig"
 source "board/engicam/icorem6/Kconfig"
 source "board/engicam/icorem6rqs/Kconfig"
