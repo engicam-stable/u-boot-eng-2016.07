@@ -275,7 +275,7 @@
 
 #define CONFIG_STR_MMC_DEV "0"
 #define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* USDHC2 */
-#define CONFIG_DEFAULT_FDT_FILE		"micro-mx6ull-starterkit.dtb"
+#define CONFIG_DEFAULT_FDT_FILE		"microgea-mx6ull-starterkit.dtb"
 
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
 
