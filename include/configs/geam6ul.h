@@ -172,7 +172,7 @@
 #endif
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-		"bootargs_base=setenv bootargs_tmp console=" CONFIG_CONSOLE_DEV ",115200 cma=16M video=${video_type},${lcd_panel}\0"			\
+		"bootargs_base=setenv bootargs_tmp console=" CONFIG_CONSOLE_DEV ",115200 cma=64M video=${video_type},${lcd_panel}\0"			\
 		"bootargs_mmc=run bootargs_base; setenv bootargs ${bootargs_tmp} ${mtdparts} root=/dev/mmcblk${mmcdev}p2 rootwait rw\0" \
 		"bootcmd_mmc=setenv mmcdev 0; run bootargs_mmc; run loadfdt; run loaduImage; bootm ${loadaddr} - ${fdt_addr}\0"	\
 		"bootargs_net=run bootargs_base; setenv bootargs ${bootargs_tmp} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 				\
