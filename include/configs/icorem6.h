@@ -98,7 +98,7 @@
 
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
 
-#define EXTRA_OPTION_SOLO	 " cma=96MB "
+#define EXTRA_OPTION_SOLO	 " cma=128MB "
 #define BOOTCMD_MMC_YOCTO	 "run loadfdt; fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr}"
 #define YOCTO_BOOTCMD_MMC_ICORE	 "setenv mmcdev 0; run bootargs_mmc; " BOOTCMD_MMC_YOCTO
 #define YOCTO_BOOTCMD_NET	 "run bootargs_net; tftp uImage; tftp ${fdt_addr} uImage.dtb; bootm ${loadaddr} - ${fdt_addr}"

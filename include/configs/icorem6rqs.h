@@ -54,7 +54,7 @@
 #define CONFIG_IPADDR		192.168.2.75
 #define CONFIG_NETMASK		255.255.255.0
 #define CONFIG_ETHADDR		9C:53:CD:01:21:6A
- 
+
 
 #define CONFIG_SYS_FSL_USDHC_NUM	3
 
@@ -75,7 +75,7 @@
 
 
 
-#define EXTRA_OPTION_SOLO	 " cma=96MB "
+#define EXTRA_OPTION_SOLO	 " cma=128MB "
 #define BOOTCMD_MMC_YOCTO	 "run loadfdt; fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr}"
 #define YOCTO_BOOTCMD_MMC_ICORE	 "run bootargs_mmc; " BOOTCMD_MMC_YOCTO
 #define YOCTO_BOOTCMD_MMC_RQS	 "run bootargs_base; run bootargs_mmc; setenv mmcdev 1; " BOOTCMD_MMC_YOCTO
