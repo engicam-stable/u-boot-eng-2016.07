@@ -1,0 +1,15 @@
+if TARGET_SMARCORE_MX6SX
+
+config SYS_BOARD
+	default "smarcore-mx6sx"
+
+config SYS_VENDOR
+	default "engicam"
+
+config SYS_SOC
+	default "mx6"
+
+config SYS_CONFIG_NAME
+	default "smarcore-mx6sx"
+
+endif

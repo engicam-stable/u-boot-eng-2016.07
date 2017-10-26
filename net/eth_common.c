@@ -57,12 +57,15 @@ int eth_setenv_enetaddr_by_index(const char *base_name, int index,
 
 void eth_common_init(void)
 {
+  printf("BOOTSTAGE_ID_NET_ETH_START=%d\n", BOOTSTAGE_ID_NET_ETH_START);
 	bootstage_mark(BOOTSTAGE_ID_NET_ETH_START);
 #if defined(CONFIG_MII) || defined(CONFIG_CMD_MII) || defined(CONFIG_PHYLIB)
+  printf("miiphy_init\n");
 	miiphy_init();
 #endif
 
 #ifdef CONFIG_PHYLIB
+  printf("phy_init\n");
 	phy_init();
 #endif
 }

@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
-
+#define DEBUG
 #include <common.h>
 #include <malloc.h>
 #include <memalign.h>
@@ -513,14 +513,22 @@ static int fec_open(struct eth_device *edev)
 
 #ifdef FEC_QUIRK_ENET_MAC
 	{
-		u32 ecr = readl(&fec->eth->ecntrl) & ~FEC_ECNTRL_SPEED;
-		u32 rcr = readl(&fec->eth->r_cntrl) & ~FEC_RCNTRL_RMII_10T;
+	u32 ecr = readl(&fec->eth->ecntrl) & ~FEC_ECNTRL_SPEED;
+ 		u32 rcr = (readl(&fec->eth->r_cntrl) &
+				~(FEC_RCNTRL_RGMII | FEC_RCNTRL_RMII | FEC_RCNTRL_RMII_10T));
+
+		if (fec->xcv_type == RGMII)
+			rcr |= FEC_RCNTRL_RGMII;
+		else if (fec->xcv_type == RMII)
+			rcr |= FEC_RCNTRL_RMII;
+
 		if (speed == _1000BASET)
 			ecr |= FEC_ECNTRL_SPEED;
 		else if (speed != _100BASET)
 			rcr |= FEC_RCNTRL_RMII_10T;
 		writel(ecr, &fec->eth->ecntrl);
 		writel(rcr, &fec->eth->r_cntrl);
+
 	}
 #endif
 	debug("%s:Speed=%i\n", __func__, speed);
@@ -1091,6 +1099,7 @@ int fecmxc_initialize_multi(bd_t *bd, int dev_id, int phy_id, uint32_t addr)
 {
 	uint32_t base_mii;
 	struct mii_dev *bus = NULL;
+  printf("fecmxc_initialize_multi\n");
 #ifdef CONFIG_PHYLIB
 	struct phy_device *phydev = NULL;
 #endif
@@ -1102,16 +1111,22 @@ int fecmxc_initialize_multi(bd_t *bd, int dev_id, int phy_id, uint32_t addr)
 	 * Only the first one can access the MDIO bus.
 	 */
 	base_mii = MXS_ENET0_BASE;
+#elif defined(CONFIG_SMARCORE_M6SX)
+	base_mii = ENET2_BASE_ADDR;
 #else
 	base_mii = addr;
 #endif
 	debug("eth_init: fec_probe(bd, %i, %i) @ %08x\n", dev_id, phy_id, addr);
 	bus = fec_get_miibus(base_mii, dev_id);
 	if (!bus)
+  {
 		return -ENOMEM;
+  }
+  
 #ifdef CONFIG_PHYLIB
 	phydev = phy_find_by_mask(bus, 1 << phy_id, PHY_INTERFACE_MODE_RGMII);
-	if (!phydev) {
+	if (!phydev) 
+  {
 		mdio_unregister(bus);
 		free(bus);
 		return -ENOMEM;
@@ -1127,12 +1142,14 @@ int fecmxc_initialize_multi(bd_t *bd, int dev_id, int phy_id, uint32_t addr)
 		mdio_unregister(bus);
 		free(bus);
 	}
+	
 	return ret;
 }
 
 #ifdef CONFIG_FEC_MXC_PHYADDR
 int fecmxc_initialize(bd_t *bd)
 {
+  printf("fecmxc_initialize\n");
 	return fecmxc_initialize_multi(bd, -1, CONFIG_FEC_MXC_PHYADDR,
 			IMX_FEC_BASE);
 }

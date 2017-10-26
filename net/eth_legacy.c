@@ -245,13 +245,22 @@ int eth_initialize(void)
 	 * If board-specific initialization exists, call it.
 	 * If not, call a CPU-specific one
 	 */
-	if (board_eth_init != __def_eth_init) {
+	if (board_eth_init != __def_eth_init) 
+  {
 		if (board_eth_init(gd->bd) < 0)
+    {
 			printf("Board Net Initialization Failed\n");
-	} else if (cpu_eth_init != __def_eth_init) {
+    }
+	} 
+	else if (cpu_eth_init != __def_eth_init) 
+  {
 		if (cpu_eth_init(gd->bd) < 0)
+    {
 			printf("CPU Net Initialization Failed\n");
-	} else {
+    }
+	} 
+	else 
+  {
 		printf("Net Initialization Skipped\n");
 	}
 

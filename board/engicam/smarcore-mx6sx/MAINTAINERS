@@ -1,0 +1,7 @@
+SMARCORE_M6SX BOARD
+M:	Mirko Ardinghi <mirko.ardinghi@engicam.com>
+S:	Maintained
+F:	board/engicam/smarcore-m6sx/
+F:	include/configs/smarcore-m6sx.h
+F:	configs/smarcorem6sx_sd_defconfig
+F:	configs/smarcorem6sx_emme_defconfig
