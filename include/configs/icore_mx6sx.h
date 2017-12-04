@@ -216,9 +216,6 @@
 /* MP: #define CONFIG_ENV_IS_IN_SPI_FLASH */
 #else
 /* define CONFIG_SYS_USE_QSPI */  /* Enable the QSPI flash at default */
-#ifndef CONFIG_ENV_IS_IN_MMC 
-	#define CONFIG_ENV_IS_IN_NAND	
-#endif
 	#define CONFIG_SYS_USE_NAND
 	/* #define CONFIG_ENV_IS_IN_MMC */
 	
