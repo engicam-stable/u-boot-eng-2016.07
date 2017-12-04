@@ -1,0 +1,6 @@
+ICORE_M6SX BOARD
+M:	Matteo Manetti <matteo.manetti@engicam.com>
+S:	Maintained
+F:	board/engicam/icore_m6sx/
+F:	include/configs/icore_m6sx.h
+F:	configs/icore_m6sx_defconfig

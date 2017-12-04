@@ -118,6 +118,12 @@ config TARGET_ICOREM6RQS
 	select DM_THERMAL
 	select SUPPORT_SPL
 
+config TARGET_ICORE_MX6SX
+	bool "Support Engicam i.Core M6SX"
+	select DM
+	select DM_THERMAL
+	select SUPPORT_SPL
+
 config TARGET_MX6SLEVK
 	bool "mx6slevk"
 	select SUPPORT_SPL
@@ -269,6 +275,7 @@ source "board/engicam/microgea-mx6ull/Kconfig"
 source "board/engicam/isiot/Kconfig"
 source "board/engicam/icorem6/Kconfig"
 source "board/engicam/icorem6rqs/Kconfig"
+source "board/engicam/icore_mx6sx/Kconfig"
 source "board/freescale/mx6qarm2/Kconfig"
 source "board/freescale/mx6qsabreauto/Kconfig"
 source "board/freescale/mx6sabresd/Kconfig"
