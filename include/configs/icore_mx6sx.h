@@ -271,7 +271,7 @@
 #define CONFIG_CMD_NAND_TRIMFFS
 
 #if defined(CONFIG_ENV_IS_IN_MMC)
-#define CONFIG_ENV_OFFSET		(8 * SZ_64K)
+#define CONFIG_ENV_OFFSET		(16 * SZ_64K)
 #elif defined(CONFIG_ENV_IS_IN_NAND)
 #undef CONFIG_ENV_SIZE
 #define CONFIG_ENV_OFFSET		(0x1c0000)
@@ -285,8 +285,6 @@
 #define CONFIG_ENV_SPI_MODE		CONFIG_SF_DEFAULT_MODE
 #define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
 #endif
-
-/* #define CONFIG_SPLASH_SCREEN */
 
 #define SHOW_ENGICAM_NOTE        "Note:    iCore6SX default U-Boot\n"
 
