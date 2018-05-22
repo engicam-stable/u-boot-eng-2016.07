@@ -86,6 +86,7 @@ static iomux_v3_cfg_t const cko_pads[] = {
 	MX6_PAD_JTAG_TMS__CCM_CLKO1 | MUX_PAD_CTRL(CKO_CLK_PAD_CTRL),
 };
 
+
 #if 0 //MP:tolto
 /*
  * HDMI_nRST --> Q0
@@ -359,7 +360,8 @@ static iomux_v3_cfg_t const fec2_pads[] = {
 	MX6_PAD_ENET2_TX_DATA1__ENET2_TDATA01 | MUX_PAD_CTRL(ENET_PAD_CTRL),
 	MX6_PAD_ENET2_TX_EN__ENET2_TX_EN | MUX_PAD_CTRL(ENET_PAD_CTRL),
 
-	MX6_PAD_ENET2_RX_DATA0__ENET2_RDATA00 | MUX_PAD_CTRL(ENET_PAD_CTRL),
+	//MX6_PAD_ENET2_RX_DATA0__ENET2_RDATA00 | MUX_PAD_CTRL(ENET_PAD_CTRL),
+
 	MX6_PAD_ENET2_RX_DATA1__ENET2_RDATA01 | MUX_PAD_CTRL(ENET_PAD_CTRL),
 	MX6_PAD_ENET2_RX_EN__ENET2_RX_EN | MUX_PAD_CTRL(ENET_PAD_CTRL),
 	MX6_PAD_SNVS_TAMPER9__GPIO5_IO09 | MUX_PAD_CTRL(ENET_PAD_CTRL),	/* ENET Reset */
@@ -500,6 +502,58 @@ static void setup_gpmi_nand(void)
 }
 #endif
 
+// This version control the microdev touch in the bootargs.
+int stringfind (char *str, char *key)
+{
+	char *ptr=strstr(str,key);
+	if(ptr!=NULL)
+		return 1;
+	else
+		return 0;
+}
+
+int check_microdev_touch_on_bootargs(void)
+{
+  	char *sBootArgsMicrodev = getenv("microdev");
+
+	if ( !stringfind (sBootArgsMicrodev, "touch"))
+	{		
+		printf("FOR MICRODEV TOUCH: setenv microdev touch\n");
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+
+#define GPIO2_8 IMX_GPIO_NR(2, 8)
+#define GPIO1_8 IMX_GPIO_NR(1, 8)
+static iomux_v3_cfg_t const microdev_pads[] = {
+	MX6_PAD_ENET2_RX_DATA0__GPIO2_IO08 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_GPIO1_IO08__GPIO1_IO08 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+};
+
+static void setup_iomux_microdev(void)
+{
+	imx_iomux_v3_setup_multiple_pads(microdev_pads, ARRAY_SIZE(microdev_pads));
+}
+
+void board_set_microdev (int status)
+{
+	gpio_direction_output(GPIO2_8, status);
+}
+
+void board_set_microdev_interrupt (void)
+{
+	gpio_direction_output(GPIO1_8, 0);
+	udelay(10000);
+	gpio_direction_output(GPIO1_8, 1);
+	udelay(10000);
+	gpio_direction_input(GPIO1_8);
+}
+
 int board_early_init_f(void)
 {
 	setup_iomux_uart();
@@ -521,6 +575,8 @@ int board_init(void)
 	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info1);
 #endif
 
+
+
 #ifdef	CONFIG_FEC_MXC
 	setup_fec(CONFIG_FEC_ENET_DEV);
 #endif
@@ -536,6 +592,8 @@ int board_init(void)
 #ifdef CONFIG_VIDEO_MXS
 	setup_lcd();
 #endif
+
+
 
 	return 0;
 }
@@ -560,6 +618,15 @@ int board_late_init(void)
 
 	setenv("board_rev", "-");
 #endif
+
+	if(check_microdev_touch_on_bootargs())
+	{
+		setup_iomux_microdev();
+		board_set_microdev(1);
+		udelay(100000);
+		board_set_microdev_interrupt();
+	}
+
 
 	return 0;
 }
