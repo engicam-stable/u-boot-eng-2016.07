@@ -171,14 +171,14 @@ static void iox74lv_init(void)
 /* I2C1 for PMIC and EEPROM */
 static struct i2c_pads_info i2c_pad_info1 = {
 	.scl = {
-		.i2c_mode =  MX6_PAD_UART4_TX_DATA__I2C1_SCL | PC,
-		.gpio_mode = MX6_PAD_UART4_TX_DATA__GPIO1_IO28 | PC,
-		.gp = IMX_GPIO_NR(1, 28),
+		.i2c_mode =  MX6_PAD_CSI_PIXCLK__I2C1_SCL | PC,
+		.gpio_mode = MX6_PAD_CSI_PIXCLK__GPIO4_IO18 | PC,
+		.gp = IMX_GPIO_NR(4, 18),
 	},
 	.sda = {
-		.i2c_mode = MX6_PAD_UART4_RX_DATA__I2C1_SDA | PC,
-		.gpio_mode = MX6_PAD_UART4_RX_DATA__GPIO1_IO29 | PC,
-		.gp = IMX_GPIO_NR(1, 29),
+		.i2c_mode = MX6_PAD_CSI_MCLK__I2C1_SDA | PC,
+		.gpio_mode = MX6_PAD_CSI_MCLK__GPIO4_IO17 | PC,
+		.gp = IMX_GPIO_NR(4, 17),
 	},
 };
 
