@@ -204,7 +204,11 @@
 /* Physical Memory Map */
 #define CONFIG_NR_DRAM_BANKS		1
 #define PHYS_SDRAM			MMDC0_ARB_BASE_ADDR
+#ifdef CONFIG_SDRAM_SIZE_1GB
+#define MAX_SDRAM_SIZE			0x40000000  /* Maximum 1024MB for GEA M6UL */
+#else
 #define MAX_SDRAM_SIZE			0x20000000  /* Maximum 512MB for GEA M6UL */
+#endif
 
 #define CONFIG_SYS_SDRAM_BASE		PHYS_SDRAM
 #define CONFIG_SYS_INIT_RAM_ADDR	IRAM_BASE_ADDR
