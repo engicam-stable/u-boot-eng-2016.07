@@ -1,4 +1,4 @@
-if TARGET_GEAL_MX6ULL
+if TARGET_MICROGEA_Y1
 
 config SYS_BOARD
 	default "microgea-y1"

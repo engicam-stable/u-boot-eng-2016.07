@@ -267,7 +267,7 @@
 #define CONFIG_ENV_SIZE			CONFIG_ENV_SECT_SIZE
 #endif
 
-#define SHOW_ENGICAM_NOTE        "Note:    Gealmx6ull default U-Boot\n"
+#define SHOW_ENGICAM_NOTE        "Note:    Microgeam Y1 default U-Boot\n"
 
 #ifndef CONFIG_SYS_MMC_ENV_DEV
 	#define CONFIG_SYS_MMC_ENV_DEV		0   /* USDHC1 */
