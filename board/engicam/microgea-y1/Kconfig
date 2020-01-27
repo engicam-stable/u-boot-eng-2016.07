@@ -1,0 +1,12 @@
+if TARGET_GEAL_MX6ULL
+
+config SYS_BOARD
+	default "microgea-y1"
+
+config SYS_VENDOR
+	default "engicam"
+
+config SYS_CONFIG_NAME
+	default "microgea-y1"
+
+endif
