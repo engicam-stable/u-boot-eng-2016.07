@@ -295,7 +295,7 @@ int board_mmc_init(bd_t *bis)
 #define UCTRL_PWR_POL		(1 << 9)
 
 static iomux_v3_cfg_t const usb_otg_pads[] = {
-	MX6_PAD_GPIO1_IO00__ANATOP_OTG1_ID | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_UART3_TX_DATA__ANATOP_OTG1_ID | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 /* At default the 3v3 enables the MIC2026 for VBUS power */
@@ -308,7 +308,7 @@ static void setup_usb(void)
 int board_usb_phy_mode(int port)
 {
 	if (port == 1)
-		return USB_INIT_HOST;
+    return USB_INIT_HOST;
 	else
 		return usb_phy_mode(port);
 }
