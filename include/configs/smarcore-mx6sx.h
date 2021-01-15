@@ -41,14 +41,21 @@
 #define BOOTCMD_FROM_NAND \
 	"bootargs_ubi=run bootargs_base; setenv bootargs ${bootargs_tmp} ${mtdparts} ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs\0"	\
 	"bootcmd_ubi=run bootargs_ubi;nand read ${loadaddr} 0x400000 0x700000;nand read ${fdt_addr} 0xc00000 0x100000;bootm ${loadaddr} - ${fdt_addr} \0"
+#define BOOTCMD_FROM_EMMC \
+	"bootargs_emmc=run bootargs_base; setenv bootargs ${bootargs_tmp} ${mtdparts} root=/dev/mmcblk${mmcdev}p2 rootwait rw\0" \
+	"bootcmd_emmc=setenv mmcdev 2; run bootargs_emmc; run loadfdt; run loaduImage; bootm ${loadaddr} - ${fdt_addr}\0"
 #define BOOTCMD_FROM_NET	 "run bootargs_net; tftp uImage; tftp ${fdt_addr} uImage.dtb; bootm ${loadaddr} - ${fdt_addr} \0"
 
 #if defined(CONFIG_SYS_BOOT_EMMC)
 	#define CONFIG_BOOTCMD		"bootcmd=run bootcmd_emmc\0"
+	#undef BOOTCMD_FROM_NAND
+	#define BOOTCMD_FROM_NAND ""
 #elif defined(CONFIG_SYS_BOOT_NET)
 	#define CONFIG_BOOTCMD		"bootcmd=run bootcmd_net\0"
 #else
 	#define CONFIG_BOOTCMD		"bootcmd=run bootcmd_mmc\0"
+	#undef BOOTCMD_FROM_NAND
+	#define BOOTCMD_FROM_NAND ""
 #endif
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -58,6 +65,7 @@
 		"bootargs_net=run bootargs_base; setenv bootargs ${bootargs_tmp} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 				\
 		"bootcmd_net="  BOOTCMD_FROM_NET	\
 		BOOTCMD_FROM_NAND	\
+		BOOTCMD_FROM_EMMC	\
 		CONFIG_BOOTCMD	\
 		"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0"											\
 		"mmcpart=1\0"					\
