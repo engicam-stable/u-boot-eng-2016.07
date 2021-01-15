@@ -183,48 +183,24 @@ static void setup_iomux_uart(void)
 
 static int enable_enet_clock(void)
 {
-	u32 reg = 0;
-	s32 timeout = 100000;
+	struct anatop_regs *anatop = (struct anatop_regs *)ANATOP_BASE_ADDR;
+	int reg;
 
-	struct mxc_ccm_reg *ccm = (struct mxc_ccm_reg *)CCM_BASE_ADDR;
+	reg = readl(&anatop->pll_enet);
+	reg |= BM_ANADIG_PLL_ENET_REF_25M_ENABLE;
+	writel(reg, &anatop->pll_enet);
 
-	/* Enable fec clock */
-	reg = readl(&ccm->CCGR1);
-	reg |= (0x3 << 10);
-	writel(reg, &ccm->CCGR1);
-
-	/* Enable PLLs and set 50MHz for enet */
-	reg = readl(ANATOP_BASE_ADDR+0xE0);
-	reg &= ~(1<<12);
-	writel(reg, ANATOP_BASE_ADDR+0xE0);
-	reg &= ~0x03;
-	reg |= 1;	/* 50 MHz */
-	writel(reg, ANATOP_BASE_ADDR+0xE0);
-	reg |= (1<<13);	// BM_ANADIG_PLL_SYS_ENABLE
-	while (timeout--) {
-		if (readl(ANATOP_BASE_ADDR+0xE0) & (1<<31)/*BM_ANADIG_PLL_SYS_LOCK*/)
-			break;
-	}
-	if (timeout <= 0)
-	{
-		printf("ENET PLL Not locked!!\n");
-		return -EIO;
-	}
-	reg &= ~(1<<16); //BM_ANADIG_PLL_SYS_BYPASS;
-	writel(reg, ANATOP_BASE_ADDR+0xE0);
 	return 0 ;
 }
 
 static int setup_fec(int fec_id)
 {
-  printf("SETUP_FEC\n");
 	struct iomuxc *iomuxc_gpr_regs = (struct iomuxc *)IOMUXC_BASE_ADDR;
 	int ret;
 
 #ifdef CONFIG_FEC_CLOCK_FROM_ANATOP
 	if (0 == fec_id)
   {
-    printf("STEP 0\n");
 		/* Use 125M anatop loopback REF_CLK1 for ENET1, clear gpr1[13], gpr1[17]*/
 		clrsetbits_le32(&iomuxc_gpr_regs->gpr[1], IOMUX_GPR1_FEC1_MASK, 0);
   }
@@ -245,17 +221,14 @@ static int setup_fec(int fec_id)
 		clrbits_le32(&iomuxc_gpr_regs->gpr[1], IOMUX_GPR1_FEC2_CLOCK_MUX1_SEL_MASK);
 	}
 #endif
-printf("SETUP_FEC1\n");
 	imx_iomux_v3_setup_multiple_pads(phy_control_pads, ARRAY_SIZE(phy_control_pads));
 
-printf("SETUP_FEC2\n");
 	ret = enable_fec_anatop_clock(fec_id, ENET_125MHZ);
-printf("SETUP_FEC3\n");
+
 	if (ret)
 		return ret;
 
 	enable_enet_clock();
-
 
 	imx_iomux_v3_setup_multiple_pads(fec_pre_reset_pads, ARRAY_SIZE(fec_pre_reset_pads));
 
@@ -281,7 +254,6 @@ printf("SETUP_FEC3\n");
 
 	imx_iomux_v3_setup_multiple_pads(fec_post_reset_pads,	ARRAY_SIZE(fec_post_reset_pads));
 
-printf("SETUP_FEC_OFF\n");
 	return 0;
 }
 
@@ -661,7 +633,7 @@ int board_init(void)
 
 int checkboard(void)
 {
-	puts("Board: MX6SX SABRE SDB\n");
+	puts("Board: MX6SX ENGICAM SMARCORE\n");
 
 	return 0;
 }
