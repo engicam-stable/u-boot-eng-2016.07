@@ -28,8 +28,8 @@
 #endif
 
 #define CONFIG_MACH_TYPE	3980
-#define CONFIG_MXC_UART_BASE	UART4_BASE
-#define CONFIG_CONSOLE_DEV		"ttymxc3"
+#define CONFIG_MXC_UART_BASE	UART2_BASE
+#define CONFIG_CONSOLE_DEV		"ttymxc1"
 #define CONFIG_MMCROOT			"/dev/mmcblk0p2"
 
 /* Miscellaneous configurable options */

@@ -157,13 +157,7 @@ void rqs_init_module_version (void)
 	
 	/* config pad iomux */
 	imx_iomux_v3_setup_multiple_pads(version_pads, ARRAY_SIZE(version_pads));
-
-	
-	if(gpio_get_value(IMX_GPIO_NR(1, 29)) == 0)
-		icore_module_vers=ICOREQ7_REVA;
-	else
-		icore_module_vers=ICOREQ7_REVMINUS;
-
+	icore_module_vers=ICOREQ7_REVA;
 }
 
 int dram_init(void)
@@ -172,9 +166,9 @@ int dram_init(void)
 	return 0;
 }
 
-iomux_v3_cfg_t const uart4_pads[] = {
-	MX6_PAD_KEY_COL0__UART4_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
-	MX6_PAD_KEY_ROW0__UART4_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
+static iomux_v3_cfg_t const uart2_pads[] = {
+  MX6_PAD_EIM_D26__UART2_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
+  MX6_PAD_EIM_D27__UART2_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
 };
 
 iomux_v3_cfg_t const enet_pads[] = {
@@ -302,7 +296,7 @@ void ldo_mode_set(int ldo_bypass)
 
 static void setup_iomux_uart(void)
 {
-	imx_iomux_v3_setup_multiple_pads(uart4_pads, ARRAY_SIZE(uart4_pads));
+	imx_iomux_v3_setup_multiple_pads(uart2_pads, ARRAY_SIZE(uart2_pads));
 }
 
 #ifdef CONFIG_FSL_ESDHC
@@ -732,6 +726,18 @@ int board_late_init(void)
 	setup_i2c(2, CONFIG_SYS_I2C_SPEED,
 					CONFIG_SYS_I2C_SLAVE + 1, &i2c_pad_info2);
 #endif
+	struct ocotp_regs *ocotp = (struct ocotp_regs *)OCOTP_BASE_ADDR;
+	struct fuse_bank *bank = &ocotp->bank[4];
+	struct fuse_bank4_regs *fuse = (struct fuse_bank4_regs *)bank->fuse_regs;
+
+  if ((gpio_get_value(IMX_GPIO_NR(1, 29)) == 0) && (readl(&fuse->gp1) == 0x000000AE))
+  {
+    setenv("manufacter", "Engicam");
+  }
+	else
+  {
+    setenv("manufacter", NULL);
+  }
 
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
