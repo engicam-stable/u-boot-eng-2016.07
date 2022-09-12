@@ -143,6 +143,8 @@ static char* icore_module_vers_str[] =
         "RevA",
 };
 
+static char iAmEngicam = 0x0;
+
 static unsigned int icore_module_vers = ICOREQ7_VERS_LAST-1;
 
 iomux_v3_cfg_t const version_pads[] = {
@@ -218,11 +220,7 @@ iomux_v3_cfg_t enet_pads_final[] = {
 static void setup_iomux_enet(void)
 {
 
-	/* phy reset: gpio1-24 or 26 */
-	if(icore_module_vers == ICOREQ7_REVMINUS)
-		gpio_direction_output(IMX_GPIO_NR(1, 24), 0);
-	else
-		gpio_direction_output(IMX_GPIO_NR(1, 26), 0);
+	gpio_direction_output(IMX_GPIO_NR(1, 26), 0);
 	gpio_direction_output(IMX_GPIO_NR(6, 30), (CONFIG_FEC_MXC_PHYADDR >> 2));
 	gpio_direction_output(IMX_GPIO_NR(6, 25), 1);
 	gpio_direction_output(IMX_GPIO_NR(6, 27), 1);
@@ -230,20 +228,14 @@ static void setup_iomux_enet(void)
 	gpio_direction_output(IMX_GPIO_NR(6, 29), 1);
 
 	imx_iomux_v3_setup_multiple_pads(enet_pads, ARRAY_SIZE(enet_pads));
-	if(icore_module_vers == ICOREQ7_REVMINUS)
-		imx_iomux_v3_setup_multiple_pads(enet_reset_revmeno, ARRAY_SIZE(enet_reset_revmeno));
-	else
-		imx_iomux_v3_setup_multiple_pads(enet_reset_reva, ARRAY_SIZE(enet_reset_reva));
+  	imx_iomux_v3_setup_multiple_pads(enet_reset_reva, ARRAY_SIZE(enet_reset_reva));
 
 	gpio_direction_output(IMX_GPIO_NR(6, 24), 1);
 	printf("ENET board init!!\n");
 	/* Need delay 10ms according to KSZ9031 spec */
 	udelay(1000 * 10);
 
-	if(icore_module_vers == ICOREQ7_REVMINUS)
-		gpio_set_value(IMX_GPIO_NR(1, 24), 1);
-	else
-		gpio_set_value(IMX_GPIO_NR(1, 26), 1);
+  gpio_set_value(IMX_GPIO_NR(1, 26), 1);
 	imx_iomux_v3_setup_multiple_pads(enet_pads_final,
 					 ARRAY_SIZE(enet_pads_final));
 }
@@ -285,9 +277,6 @@ iomux_v3_cfg_t const usdhc4_pads[] = {
 	MX6_PAD_SD4_DAT6__SD4_DATA6 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 	MX6_PAD_SD4_DAT7__SD4_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 };
-
-
-
 
 void ldo_mode_set(int ldo_bypass)
 {
@@ -444,38 +433,75 @@ int setup_sata(void)
 }
 #endif
 
-void mx6_rgmii_rework(struct phy_device *phydev)
- {
-      //write register 6 addr 2 TXD[0:3] skew
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x0002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0006);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x4002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x4111);
+#define MICREL_KSZ9021_EXTREG_CTRL	0xB
+#define MICREL_KSZ9021_EXTREG_DATA_WRITE	0xC
+#define MICREL_KSZ9021_RGMII_CLK_CTRL_PAD_SCEW	0x104
+#define MICREL_KSZ9021_RGMII_RX_DATA_PAD_SCEW	0x105
 
-       //write register 5 addr 2 RXD[0:3] skew
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x0002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0005);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x4002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x47a7);
+void ksz9021rn_phy_fixup(struct phy_device *phydev)
+{
+  printf("ksz9021rn_phy_fixup\n");
+  phy_write(phydev, MDIO_DEVAD_NONE, MICREL_KSZ9021_EXTREG_CTRL, 0x8000 | MICREL_KSZ9021_RGMII_RX_DATA_PAD_SCEW);
+  phy_write(phydev, MDIO_DEVAD_NONE, MICREL_KSZ9021_EXTREG_DATA_WRITE, 0x0000);
 
-       //write register 4 addr 2 RX_DV TX_EN skew
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x0002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0004);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x4002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x004A);
-
-       //write register 8 addr 2 clock skew
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x0002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0008);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x4002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0273);
-
+  phy_write(phydev, MDIO_DEVAD_NONE, MICREL_KSZ9021_EXTREG_CTRL, 0x8000 | MICREL_KSZ9021_RGMII_CLK_CTRL_PAD_SCEW);
+  phy_write(phydev, MDIO_DEVAD_NONE, MICREL_KSZ9021_EXTREG_DATA_WRITE, 0xf0f0);
+    
+  phy_write(phydev, MDIO_DEVAD_NONE, MICREL_KSZ9021_EXTREG_CTRL, MICREL_KSZ9021_RGMII_CLK_CTRL_PAD_SCEW);
 }
 
+static void mmd_write_reg(struct phy_device *dev, int device, int reg, int val)
+{
+	phy_write(dev, MDIO_DEVAD_NONE, 0x0d, device);
+	phy_write(dev, MDIO_DEVAD_NONE, 0x0e, reg);
+	phy_write(dev, MDIO_DEVAD_NONE, 0x0d, (1 << 14) | device);
+	phy_write(dev, MDIO_DEVAD_NONE, 0x0e, val);
+}
+
+static int ksz9031rn_phy_fixup(struct phy_device *phydev)
+{
+	//printk("Init ksz9031rn PHY\n");
+  printf("ksz9031rn_phy_fixup\n");
+	//write register 6 addr 2 TXD[0:3] skew
+	mmd_write_reg(phydev, 2, 6, 0x4111);
+
+	//write register 5 addr 2 RXD[0:3] skew
+	mmd_write_reg(phydev, 2, 5, 0x47a7);
+
+	//write register 4 addr 2 RX_DV TX_EN skew
+	mmd_write_reg(phydev, 2, 4, 0x004A);
+
+	//write register 8 addr 2 RX_CLK GTX_CLK skew
+	mmd_write_reg(phydev, 2, 8, 0x0273);
+
+	return 0;
+}
 
 int board_phy_config(struct phy_device *phydev)
 {
-	mx6_rgmii_rework(phydev);
+  unsigned short tmp1 = 0;
+  unsigned short tmp2 = 0;
+
+  if (iAmEngicam == 0x1)
+  {
+    if (miiphy_read("FEC", CONFIG_FEC_MXC_PHYADDR, MII_PHYSID2, &tmp2) != 0) {
+      debug("PHY ID register 3 read failed\n");
+    }  
+    if (miiphy_read("FEC", CONFIG_FEC_MXC_PHYADDR, MII_PHYSID1, &tmp1) != 0) {
+      debug("PHY ID register 2 read failed\n");
+    }  
+   // debug("%s %d tmp1=%x tmp2=%x %x\n", __func__, __LINE__, tmp1, tmp2, (tmp2>>4)&0x3F);
+    
+    unsigned short model = (tmp2>>4) & 0x3F;  
+    if (model == 0x21) // KSZ9021
+    {
+      ksz9021rn_phy_fixup(phydev);
+    }
+    else if (model == 0x22) // KSZ9031
+    {
+      ksz9031rn_phy_fixup(phydev);
+    }
+  }
 
 	if (phydev->drv->config)
 		phydev->drv->config(phydev);
@@ -664,7 +690,7 @@ int overwrite_console(void)
 int board_eth_init(bd_t *bis)
 {
 	int ret;
-
+//printf("FEC MXC: %s:failed\n", __func__);
 	ret = cpu_eth_init(bis);
 	if (ret)
 		printf("FEC MXC: %s:failed\n", __func__);
@@ -732,6 +758,7 @@ int board_late_init(void)
 
   if ((gpio_get_value(IMX_GPIO_NR(1, 29)) == 0) && (readl(&fuse->gp1) == 0x000000AE))
   {
+    iAmEngicam = 0x1;
     setenv("manufacter", "Engicam");
   }
 	else
