@@ -486,10 +486,10 @@ int board_phy_config(struct phy_device *phydev)
   unsigned short tmp1 = 0;
   unsigned short tmp2 = 0;
 
-  if (miiphy_read("FEC", CONFIG_FEC_MXC_PHYADDR, MII_PHYSID2, &tmp2) != 0) {
+  if (miiphy_read("FEC", phydev->addr, MII_PHYSID2, &tmp2) != 0) {
 	debug("PHY ID register 3 read failed\n");
   }  
-  if (miiphy_read("FEC", CONFIG_FEC_MXC_PHYADDR, MII_PHYSID1, &tmp1) != 0) {
+  if (miiphy_read("FEC", phydev->addr, MII_PHYSID1, &tmp1) != 0) {
 	debug("PHY ID register 2 read failed\n");
   }  
 
@@ -691,6 +691,7 @@ int board_eth_init(bd_t *bis)
 {
 	int ret;
 //printf("FEC MXC: %s:failed\n", __func__);
+
 	ret = cpu_eth_init(bis);
 	if (ret)
 		printf("FEC MXC: %s:failed\n", __func__);

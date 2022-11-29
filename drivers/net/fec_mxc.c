@@ -1133,8 +1133,18 @@ int fecmxc_initialize_multi(bd_t *bd, int dev_id, int phy_id, uint32_t addr)
 #ifdef CONFIG_FEC_MXC_PHYADDR
 int fecmxc_initialize(bd_t *bd)
 {
-	return fecmxc_initialize_multi(bd, -1, CONFIG_FEC_MXC_PHYADDR,
-			IMX_FEC_BASE);
+	int i;
+	int result;
+	for (i=0; i<32; i++)
+	{
+		result = fecmxc_initialize_multi(bd, -1, i, IMX_FEC_BASE);
+		if (result >= 0)
+		{
+			break;
+		}
+	}
+
+	return result;
 }
 #endif
 
