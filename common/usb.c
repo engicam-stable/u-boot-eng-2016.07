@@ -76,7 +76,7 @@ int usb_init(void)
 	}
 
 	/* init low_level USB */
-	for (i = 0; i < CONFIG_USB_MAX_CONTROLLER_COUNT; i++) {
+	for (i = 1; i <= CONFIG_USB_MAX_CONTROLLER_COUNT; i++) {
 		/* init low_level USB */
 		printf("USB%d:   ", i);
 		ret = usb_lowlevel_init(i, USB_INIT_HOST, &ctrl);
@@ -140,7 +140,7 @@ int usb_stop(void)
 		usb_started = 0;
 		usb_hub_reset();
 
-		for (i = 0; i < CONFIG_USB_MAX_CONTROLLER_COUNT; i++) {
+		for (i = 1; i <= CONFIG_USB_MAX_CONTROLLER_COUNT; i++) {
 			if (usb_lowlevel_stop(i))
 				printf("failed to stop USB controller %d\n", i);
 		}

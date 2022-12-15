@@ -961,11 +961,26 @@ int board_ehci_power(int port, int on)
 		// TBD
 		break;
 	case 1:
+		if (on)
+		{
+			gpio_direction_output(IMX_GPIO_NR(1, 6), 0);
+
+			// Clock
+			unsigned int *addr = 0x20c8160;
+			unsigned int val = 0xA40;
+			writel(val, addr);
+			udelay(1000 * 10);
+			gpio_direction_output(IMX_GPIO_NR(1, 6), 1);
+		}
+		else
+			gpio_direction_output(IMX_GPIO_NR(1, 6), 0);
 		break;
+
 	default:
 		printf("MXC USB port %d not yet supported\n", port);
 		return 1;
 	}
+
 	return 0;
 }
 #endif
